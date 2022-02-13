@@ -1,6 +1,6 @@
 CC = gcc
 LD = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -O3
 LDFLAGS = 
 LDLIBS = -lm -L/opt/X11/lib -lX11 -lm
 RM = /bin/rm -f
