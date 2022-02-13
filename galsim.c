@@ -5,13 +5,12 @@
 #include "graphics/graphics.h"
 
 typedef struct {
-  double x, y, mass, vel_x, vel_y, brightness; 
+  double x, y, mass, vel_x, vel_y, brightness, f_x, f_y; 
 } particle;
 
 
 void runSimulation(int N, particle* particles, double delta_t, int nsteps, int useGraphics, char* argv[]) {
   const double smoothing = 1e-3;
-  double* force = (double*)malloc(sizeof(double)*2*N);
   double G = 100.0 / (double)N;
 
   const int WIDTH = 800;
@@ -23,10 +22,12 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
   }
 
   for (int step = 0; step < nsteps; step++) {
-    memset(force,0,sizeof(double)*2*N);
+    for (int i = 0; i < N; i++) {
+      particles[i].f_x = 0;
+      particles[i].f_y = 0;
+    }
     for (int i = 0; i < N; i++) {
       particle p_i = particles[i];
-
       for (int j = i+1; j < N; j++) {
         particle p_j = particles[j];
         double diff_x = p_i.x - p_j.x;
@@ -39,16 +40,16 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
         double f_x = k*diff_x;
         double f_y = k*diff_y;
 
-        force[i*2] += f_x;
-        force[i*2+1] += f_y;
-        force[j*2] -= f_x;
-        force[j*2+1] -= f_y;
+        particles[i].f_x += f_x;
+        particles[i].f_y += f_y;
+        particles[j].f_x -= f_x;
+        particles[j].f_y -= f_y;
       }
     }
 
     for (int i = 0; i < N; i++) {
-      double acc_x = force[2*i] / particles[i].mass;
-      double acc_y = force[2*i+1] / particles[i].mass;
+      double acc_x = particles[i].f_x / particles[i].mass;
+      double acc_y = particles[i].f_y / particles[i].mass;
       particles[i].vel_x += delta_t * acc_x; 
       particles[i].vel_y += delta_t * acc_y; 
       particles[i].x += delta_t * particles[i].vel_x;
@@ -65,9 +66,7 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
         break;
     }
 
-  } 
-
-  free(force);
+  }
   
   if(useGraphics) {
     printf("Done.");
