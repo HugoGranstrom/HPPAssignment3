@@ -25,21 +25,21 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
   for (int step = 0; step < nsteps; step++) {
     memset(force,0,sizeof(double)*2*N);
     for (int i = 0; i < N; i++) {
-      for (int j = i; j < N; j++) {
-        if (i != j) {
-          double diff_x = particles[i].x - particles[j].x;
-          double diff_y = particles[i].y - particles[j].y;
-          double r = sqrt(diff_x * diff_x + diff_y * diff_y);
-          double denom = (r + smoothing) * (r + smoothing) * (r + smoothing);
-          
-          double f_x = -G * particles[i].mass * particles[j].mass * diff_x / denom;
-          double f_y = -G * particles[i].mass * particles[j].mass * diff_y / denom;
+      particle p_i = particles[i];
+      for (int j = i+1; j < N; j++) {
+        particle p_j = particles[j];
+        double diff_x = p_i.x - p_j.x;
+        double diff_y = p_i.y - p_j.y;
+        double r = sqrt(diff_x * diff_x + diff_y * diff_y);
+        double denom = (r + smoothing) * (r + smoothing) * (r + smoothing);
+        
+        double f_x = -G * p_i.mass * p_j.mass * diff_x / denom;
+        double f_y = -G * p_i.mass * p_j.mass * diff_y / denom;
 
-          force[i*2] += f_x;
-          force[i*2+1] += f_y;
-          force[j*2] -= f_x;
-          force[j*2+1] -= f_y;
-        }
+        force[i*2] += f_x;
+        force[i*2+1] += f_y;
+        force[j*2] -= f_x;
+        force[j*2+1] -= f_y;
       }
     }
 
