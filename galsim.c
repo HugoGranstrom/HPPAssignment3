@@ -51,7 +51,7 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
     if (useGraphics) {
       ClearScreen();
       for (int i = 0; i < N; i++) {
-        DrawCircle(particles[i].x, particles[i].y, WIDTH, HEIGHT, 0.1, particles[i].brightness);
+        DrawCircle(particles[i].x, particles[i].y, 1, 1, 0.003, 0.5);
       }
       Refresh();
     }
@@ -59,7 +59,9 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
   } 
 
   if(useGraphics) {
+    printf("Done.");
     while(!CheckForQuit()) {
+      Refresh();
       usleep(300);
     }
   }
