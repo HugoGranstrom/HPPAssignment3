@@ -48,8 +48,6 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
       particles[i].y += delta_t * particles[i].vel_y;
     }
 
-    free(force);
-
     if (useGraphics) {
       ClearScreen();
       for (int i = 0; i < N; i++) {
@@ -62,6 +60,8 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
 
   } 
 
+  free(force);
+  
   if(useGraphics) {
     printf("Done.");
     while(!CheckForQuit()) {
