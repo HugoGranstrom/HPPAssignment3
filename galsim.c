@@ -2,15 +2,26 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include "graphics/graphics.h"
+
 typedef struct {
   double x, y, mass, vel_x, vel_y, brightness; 
 } particle;
 
 
-void runSimulation(int N, particle* particles, double delta_t, int nsteps, int useGraphics) {
+void runSimulation(int N, particle* particles, double delta_t, int nsteps, int useGraphics, char* argv[]) {
   const double smoothing = 1e-3;
   double* force = (double*)malloc(sizeof(double)*2*N);
   double G = 100.0 / (double)N;
+
+  const int WIDTH = 800;
+  const int HEIGHT = 800;
+
+  if(useGraphics) {
+    InitializeGraphics(argv[0],WIDTH,HEIGHT);
+    SetCAxes(0,1);
+  }
+
   for (int step = 0; step < nsteps; step++) {
     for (int i = 0; i < N; i++) {
       force[2*i] = 0.0;
@@ -36,8 +47,24 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
       particles[i].x += delta_t * particles[i].vel_x;
       particles[i].y += delta_t * particles[i].vel_y;
     }
-   
-  }  
+
+    if (useGraphics) {
+      ClearScreen();
+      for (int i = 0; i < N; i++) {
+        DrawCircle(particles[i].x, particles[i].y, 1, 1, 0.003, 0.5);
+      }
+      Refresh();
+    }
+
+  } 
+
+  if(useGraphics) {
+    printf("Done.");
+    while(!CheckForQuit()) {
+      Refresh();
+      usleep(300);
+    }
+  }
 }
 
 
@@ -75,7 +102,7 @@ int main(int argc, char* argv[]) {
   }
   fclose(f);
 
-  runSimulation(N, particles, delta_t, nsteps, useGraphics);
+  runSimulation(N, particles, delta_t, nsteps, useGraphics, argv);
 
   f = fopen("result.gal", "w");
   
