@@ -51,13 +51,17 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
     if (useGraphics) {
       ClearScreen();
       for (int i = 0; i < N; i++) {
-        DrawCircle(particles[i].x, particles[i].y, 1, 1, 0.003, 0.5);
+        DrawCircle(particles[i].x, particles[i].y, 1, 1, 0.005*particles[i].mass, particles[i].brightness/5);
       }
       Refresh();
+      if(CheckForQuit())
+        break;
     }
 
   } 
 
+  free(force);
+  
   if(useGraphics) {
     printf("Done.");
     while(!CheckForQuit()) {
@@ -98,7 +102,7 @@ int main(int argc, char* argv[]) {
     fread(&(particles[i].vel_x), sizeof(double), 1, f);     
     fread(&(particles[i].vel_y), sizeof(double), 1, f);     
     fread(&(particles[i].brightness), sizeof(double), 1, f);     
-    printf("x, y, brightness: %f, %f, %f\n", particles[i].x, particles[i].y, particles[i].brightness);
+    printf("x, y, mass: %f, %f, %f\n", particles[i].x, particles[i].y, particles[i].mass);
   }
   fclose(f);
 
@@ -113,7 +117,7 @@ int main(int argc, char* argv[]) {
     fwrite(&(particles[i].vel_x), sizeof(double), 1, f);     
     fwrite(&(particles[i].vel_y), sizeof(double), 1, f);     
     fwrite(&(particles[i].brightness), sizeof(double), 1, f);     
-    printf("x, y, brightness: %f, %f, %f\n", particles[i].x, particles[i].y, particles[i].brightness);
+    printf("x, y, mass: %f, %f, %f\n", particles[i].x, particles[i].y, particles[i].mass);
   } 
   fclose(f);
 
