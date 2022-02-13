@@ -42,6 +42,9 @@
 *.idb
 *.pdb
 
+#dot files
+._*
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd
@@ -55,3 +58,4 @@ dkms.conf
 compare
 galsim
 result.gal
+dkms.conf
