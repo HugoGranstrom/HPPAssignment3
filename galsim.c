@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "graphics/graphics.h"
+#include <omp.h>
 
 typedef struct {
   double x, y, mass, vel_x, vel_y, brightness, f_x, f_y; 
@@ -30,9 +31,10 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
       particles[i].f_y = 0;
     }
     // Calculate the forces on all particles
+    #pragma omp parallel for
     for (int i = 0; i < N; i++) {
       particle p_i = particles[i];
-      for (int j = i+1; j < N; j++) {
+      for (int j = 0; j < N; j++) {
         particle p_j = particles[j];
         // Force calculations
         double diff_x = p_i.x - p_j.x;
@@ -48,8 +50,8 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
         particles[i].f_x += f_x;
         particles[i].f_y += f_y;
         
-        particles[j].f_x -= f_x;
-        particles[j].f_y -= f_y;
+        //particles[j].f_x -= f_x;
+        //particles[j].f_y -= f_y;
       }
     }
 
@@ -88,13 +90,13 @@ void runSimulation(int N, particle* particles, double delta_t, int nsteps, int u
 
 
 int main(int argc, char* argv[]) {
-  if (argc != 6) {
+  if (argc != 7) {
     printf("Exactly 5 parameters should be given like this: ./galsim N filename nsteps delta_t graphics\n");
     return 1;
   }
 
   // Read in the cmdline arguments
-  int N, nsteps, useGraphics;
+  int N, nsteps, useGraphics, nThreads;
   char* filename;
   double delta_t;
   N = atoi(argv[1]);
@@ -102,7 +104,9 @@ int main(int argc, char* argv[]) {
   nsteps = atoi(argv[3]);
   delta_t = atof(argv[4]);
   useGraphics = atoi(argv[5]);
+  nThreads = atoi(argv[6]);
 
+  omp_set_num_threads(nThreads);
   // Allocate a list to store all particles
   particle* particles = (particle*) malloc(N*sizeof(particle));
 
