@@ -141,7 +141,7 @@ int main(int argc, char* argv[]) {
     fwrite(&(particles[i].vel_x), sizeof(double), 1, f);     
     fwrite(&(particles[i].vel_y), sizeof(double), 1, f);     
     fwrite(&(particles[i].brightness), sizeof(double), 1, f);     
-    printf("x, y, mass: %f, %f, %f\n", particles[i].x, particles[i].y, particles[i].mass);
+    //printf("x, y, mass: %f, %f, %f\n", particles[i].x, particles[i].y, particles[i].mass);
   } 
   fclose(f);
 

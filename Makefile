@@ -1,7 +1,7 @@
 CC = gcc
 LD = gcc
-CFLAGS = -Wall -O3
-LDFLAGS =
+CFLAGS = -Wall -O3 -fopenmp
+LDFLAGS = -fopenmp
 LDLIBS = -lm -L/opt/X11/lib -lX11 -lm
 RM = /bin/rm -f
 OBJS = galsim.o graphics/graphics.o 
